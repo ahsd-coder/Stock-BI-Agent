@@ -147,4 +147,5 @@ app.mount("/stock", stock_app)
 - 1.python main_mcp.py
 - 2.python main_server.py
 - 3.streamlit run demo/streamlit_demo.py
+- 注：本人也尝试在阿里云服务器端进行部署，可进行公网访问。
 
