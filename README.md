@@ -149,3 +149,29 @@ app.mount("/stock", stock_app)
 - 3.streamlit run demo/streamlit_demo.py
 - 注：本人也尝试在阿里云服务器端进行部署，可进行公网访问。
 
+## 相关问题
+- 1. 什么是前后端分离？
+- 答：前后端分离就是：前端和后端是两个独立程序，通过API通信，各自独立开发、部署、运行。在这个项目中具体体现为：
+  ·后端——main_server.py，端口8000。
+    ·Fast API服务，只负责提供数据接口（REST API）
+    ·通过routers暴露 /user、/chat、/data、/stock 等API端点
+    ·不关心页面怎么渲染，只返回JSON数据
+       ——main_mcp.py，端口8900.
+    ·跑MCP/SSE服务，供Agent对话时调用工具，但走的是不同的协议（SSE而非HTTP REST）
+  ·前端——demo目录下的streamlit页面
+    ·独立的Streamlit应用，负责UI展示和用户交互
+    ·通过requests库调用后端API获取数据，例如 requests.post("http://127.0.0.1:8000/user/login")
+    ·不关心数据从哪来、怎么处理、只管展示
+
+- 2.历史对话如何存储，以及如何将历史对话作为大模型的下一次输入？
+- 答：在开发大模型应用（如 Chatbot）时，由于 LLM 本身是无状态（Stateless）的，它不会记得你上一句话说了什么。
+
+[
+  {"role": "user", "content": "你好，请问今天天气怎么样？"},
+  {"role": "assistant", "content": "今天天气晴朗，温度约为 25°C。"},
+  {"role": "user", "content": "那我适合去爬山吗？"}
+]
+
+- 只保留最近的 K 轮对话。当新对话进入时，移除最旧的一条。这能保证模型始终记得最近的语境，同时控制成本。
+- 当对话过长时，调用大模型对之前的历史做一个“简短摘要”。
+- 从历史对话中检索到相关的信息 + 最近的K条 作为历史。
