@@ -23,6 +23,11 @@ router = APIRouter(prefix="/v1/chat", tags=["chat"])
 async def chat(req: RequestForChat) -> StreamingResponse:
     try:
         # 异步函数
+
+        # triage handoff 任务分发agent -> master agent -> 任务分发
+        #帮我查询xx数据库中用户的总数是什么？ -》 db_agent 回答这个问题
+        #帮我查询北京天气？ -》 调用带mcp 的 agent 回答这个问题
+        
         async def chat_stream_generator():
             # async for 遍历异步数据流
             async for chunk in chat_services.chat(

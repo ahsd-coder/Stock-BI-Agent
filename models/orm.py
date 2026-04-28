@@ -1,3 +1,10 @@
+'''  
+ORM是Object-Relational Mapping的缩写，是一种编程技术
+这个文件的作用，就是封装ORM相关的所有逻辑：
+·初始化数据库连接（比如SQlite/MySQL或Peewee这种ORM框架）
+·定义ORM模型的基类（比如用SQLAlchemy或Peewee这种ORM框架）
+·提供通用的数据库操作方法（增删改查、事务管理等）
+'''
 from sqlalchemy import Column, Integer, String, Float, DateTime, ForeignKey, Text, Boolean, create_engine
 from sqlalchemy.orm import DeclarativeBase, sessionmaker
 from datetime import datetime
